@@ -1,6 +1,6 @@
 # Chat Data SDK Demo Guide
 
-This document provides instructions for using the Chat Data SDK demo application (`chatbot-sdk-demo.html`). The demo showcases the features of the Chat Data JavaScript SDK and helps developers understand how to integrate it into their applications.
+This document provides instructions for using the Chat Data SDK demo application (`index.html`). The demo showcases the features of the Chat Data JavaScript SDK and helps developers understand how to integrate it into their applications.
 
 ## Contents
 
@@ -28,7 +28,7 @@ The Chat Data SDK Demo is an interactive HTML page that demonstrates the functio
 
 ### Running the Demo
 
-1. Open `chatbot-sdk-demo.html` in your web browser
+1. Open `index.html` in your web browser
 2. The SDK initializes automatically with the demo chatbot ID
 3. Once initialized, you can:
    - Send/clear user information
