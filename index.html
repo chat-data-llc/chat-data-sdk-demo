@@ -93,6 +93,10 @@
 </head>
 <body>
   <h1>Chat Data SDK Demo</h1>
+  <p>
+    <a href="https://github.com/chat-data-llc/chat-data-sdk-demo" target="_blank">GitHub Repository</a> | 
+    <a href="https://cookbook.chat-data.com/docs/chatbot-sdk" target="_blank">Documentation</a>
+  </p>
   
   <div class="card">
     <h2>SDK Configuration</h2>
@@ -107,20 +111,20 @@
     <h2>Send User Info</h2>
     <form id="userInfoForm">
       <div>
-        <label for="userId">User ID:</label>
-        <input type="text" id="userId" name="userId" value="user123">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter name (optional)" value="John Doe">
       </div>
       <div>
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" value="user@example.com">
+        <input type="email" id="email" name="email" placeholder="Enter email (optional)" value="user@example.com">
       </div>
       <div>
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" value="John Doe">
+        <label for="phone">Phone:</label>
+        <input type="tel" id="phone" name="phone" placeholder="Enter phone (optional)" value="555-123-4567">
       </div>
       <div>
-        <label for="metadata">Additional Info:</label>
-        <textarea id="metadata" name="metadata" rows="3">Premium user since 2023-01-01</textarea>
+        <label for="info">Additional Info:</label>
+        <textarea id="info" name="info" rows="3" placeholder="Enter additional info (optional)">Premium user since 2023-01-01</textarea>
         <small>Any text can be provided as additional information.</small>
       </div>
       <div style="display: flex; gap: 10px;">
@@ -150,51 +154,64 @@
   <pre>
 /**
  * Chat Data SDK Implementation Guide
- * This example demonstrates all available methods and event listeners.
+ * --------------------------------
+ * A comprehensive demonstration of all available methods and event listeners.
  */
 
-// ===== Initialization Options =====
+/* ===========================================
+   1. INITIALIZATION OPTIONS
+   =========================================== */
 
-// Method 1: Include the script with data-chatbot-id attribute for auto-initialization
-&lt;script src="https://your-domain.com/static/chatbotsdk.min.js" data-chatbot-id="YOUR_CHATBOT_ID"&gt;&lt;/script&gt;
+// Method 1: Auto-initialization with data attribute
+&lt;script 
+  src="https://www.chat-data.com/static/chatbotsdk.min.js" 
+  data-chatbot-id="YOUR_CHATBOT_ID"&gt;&lt;/script&gt;
 
-// Method 2: Include the script and initialize manually
-&lt;script src="https://your-domain.com/static/chatbotsdk.min.js"&gt;&lt;/script&gt;
+// Method 2: Manual initialization
+&lt;script src="https://www.chat-data.com/static/chatbotsdk.min.js"&gt;&lt;/script&gt;
 &lt;script&gt;
   window.chatbot.initialize({
     chatbot_id: "YOUR_CHATBOT_ID"
   });
 &lt;/script&gt;
 
-// ===== User Information Management =====
+// For custom domains
+&lt;script 
+  src="https://your-domain.com/static/chatbotsdk.min.js" 
+  data-chatbot-id="YOUR_CHATBOT_ID"&gt;&lt;/script&gt;
 
-// Send user information to the chatbot
+
+/* ===========================================
+   2. USER INFORMATION MANAGEMENT
+   =========================================== */
+
+// Basic user info sending
 window.chatbot.sendUserInfo({
-  userId: "user123",                    // Unique identifier for the user
-  email: "user@example.com",            // User's email address
-  name: "John Doe",                     // User's name
-  info: "Premium user since 2023-01-01" // Any additional information as a text string
+  name: "John Doe",                     // Optional
+  email: "user@example.com",            // Optional
+  phone: "555-123-4567",                // Optional
+  info: "Premium user since 2023-01-01" // Optional additional info
 }).then(response => {
   console.log("User info sent:", response);
 }).catch(error => {
   console.error("Error sending user info:", error);
 });
 
-// Examples of different info values
+// Different info value examples
 window.chatbot.sendUserInfo({
-  userId: "user456",
+  name: "Jane Smith",
   info: "Student account"               // Simple text string
 });
 
 window.chatbot.sendUserInfo({
-  userId: "user789",
-  info: JSON.stringify({                // You can also use stringified JSON if needed
+  email: "user@example.com",
+  info: JSON.stringify({                // Stringified JSON for structured data
     plan: "premium",
     signupDate: "2023-01-01"
   })
 });
 
-// Clear user information
+// Clearing user information
 window.chatbot.clearUserInfo()
   .then(response => {
     console.log("User info cleared:", response);
@@ -203,7 +220,10 @@ window.chatbot.clearUserInfo()
     console.error("Error clearing user info:", error);
   });
 
-// ===== Event Listeners =====
+
+/* ===========================================
+   3. EVENT LISTENERS
+   =========================================== */
 
 // 1. Chat messages
 const chatHandler = function(data) {
@@ -233,33 +253,38 @@ const minimizeWidgetHandler = function(data) {
 };
 window.chatbot.addEventListener("minimize-widget", minimizeWidgetHandler);
 
-// ===== Removing Event Listeners =====
-
-// Remove a specific event listener
+// Removing event listeners
 window.chatbot.removeEventListener("chat", chatHandler);
 
-// ===== Configuration =====
 
-// Retrieve current configuration
+/* ===========================================
+   4. CONFIGURATION
+   =========================================== */
+
+// Get current configuration
 const config = window.chatbot.getConfig();
 console.log("Current configuration:", config);
 
-// ===== Error Handling =====
 
-// Always use try-catch for SDK interactions
+/* ===========================================
+   5. ERROR HANDLING
+   =========================================== */
+
+// Option 1: Using try-catch blocks
 try {
   window.chatbot.sendUserInfo({
-    userId: "user123",
-    info: "Basic plan user"             // Simple text string
+    name: "John Doe",
+    info: "Basic plan user"
   });
 } catch (error) {
   console.error("Error using SDK:", error);
 }
 
-// Or use Promise error handling
+// Option 2: Using Promise error handling
 window.chatbot.sendUserInfo({
-  userId: "user123",
-  info: "Last visited: " + new Date().toLocaleDateString()  // Text string with date
+  email: "user@example.com",
+  phone: "555-123-4567",
+  info: "Last visited: " + new Date().toLocaleDateString()
 })
 .then(response => {
   // Success handler
@@ -271,23 +296,26 @@ window.chatbot.sendUserInfo({
   // Always executed
 });
 
-// ===== Common Patterns =====
 
-// Example: Sending user data after login
+/* ===========================================
+   6. COMMON USAGE PATTERNS
+   =========================================== */
+
+// Sending user data after login
 function onUserLogin(userData) {
   if (window.chatbot) {
     window.chatbot.sendUserInfo({
-      userId: userData.id,
-      email: userData.email,
       name: userData.displayName,
-      info: userData.accountType || "Standard user"  // Simple text information
+      email: userData.email,
+      phone: userData.phoneNumber,
+      info: userData.accountType || "Standard user"
     }).then(() => {
       console.log("User info sent to chatbot after login");
     });
   }
 }
 
-// Example: Setting up all event listeners at once
+// Setting up all event listeners at once
 function setupChatbotEventListeners() {
   const events = ["chat", "lead-submission", "live-chat-escalation", "minimize-widget"];
   
@@ -301,13 +329,28 @@ function setupChatbotEventListeners() {
   </pre>
 
   <!-- Include the Chat Data SDK with auto-initialization -->
-  <script src="https://www.chat-data.com/chatbotsdk.min.js" data-chatbot-id="664ff53d91ad3b333d283502"></script>
+  <script>
+    // Configuration constants - Edit these to use your own values
+    const CHAT_DATA_DOMAIN = "www.chat-data.com";
+    const CHAT_DATA_CHATBOT_ID = "YOUR_CHATBOT_ID";
 
-  <!-- Optional embed script -->
-  <script 
-    src="https://www.chat-data.com/embed.min.js?chatbotId=664ff53d91ad3b333d283502"
-    defer>
+    // Dynamically load the Chat Data SDK
+    document.addEventListener('DOMContentLoaded', function() {
+      // Create and append the main SDK script
+      const sdkScript = document.createElement('script');
+      sdkScript.src = "https://" + CHAT_DATA_DOMAIN + "/chatbotsdk.min.js";
+      sdkScript.setAttribute('data-chatbot-id', CHAT_DATA_CHATBOT_ID);
+      document.head.appendChild(sdkScript);
+      
+      // Create and append the embed script
+      const embedScript = document.createElement('script');
+      embedScript.src = "https://" + CHAT_DATA_DOMAIN + "/embed.min.js?chatbotId=" + CHAT_DATA_CHATBOT_ID;
+      embedScript.defer = true;
+      document.head.appendChild(embedScript);
+    });
   </script>
+
+  <!-- The scripts are now loaded dynamically via JavaScript -->
   
   <script>
     // Function to update the current configuration display
@@ -388,17 +431,17 @@ function setupChatbotEventListeners() {
     document.getElementById('userInfoForm').addEventListener('submit', function(event) {
       event.preventDefault();
       
-      const userId = document.getElementById('userId').value;
-      const email = document.getElementById('email').value;
       const name = document.getElementById('name').value;
-      const info = document.getElementById('metadata').value; // Use text value directly
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const info = document.getElementById('info').value;
       
       // Send user info using the SDK
       logEvent('Sending user info...', 'info');
       window.chatbot.sendUserInfo({
-        userId,
-        email,
         name,
+        email,
+        phone,
         info
       }).then(response => {
         logEvent('User info sent successfully', 'success', response);
