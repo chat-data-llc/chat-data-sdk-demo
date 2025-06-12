@@ -135,6 +135,16 @@
   </div>
 
   <div class="card">
+    <h2>Widget Controls</h2>
+    <p>Programmatically control the chatbot widget's open/closed state.</p>
+    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+      <button id="openWidgetBtn">Open Widget</button>
+      <button id="closeWidgetBtn" class="danger">Close Widget</button>
+      <button id="toggleWidgetBtn">Toggle Widget</button>
+    </div>
+  </div>
+
+  <div class="card">
     <h2>Event Listeners</h2>
     <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px;">
       <button id="addChatListener">Add chat Listener</button>
@@ -187,6 +197,8 @@
 
 // Basic user info sending
 window.chatbot.sendUserInfo({
+  userId: "user_12345",                 // Optional unique user identifier
+  userHash: "59b403cc509e4f27ed10a6cb440cb2fb74a9fd71b2564ab19cb06527f2a7aa7a", // Optional security hash
   name: "John Doe",                     // Optional
   email: "user@example.com",            // Optional
   phone: "555-123-4567",                // Optional
@@ -199,11 +211,15 @@ window.chatbot.sendUserInfo({
 
 // Different info value examples
 window.chatbot.sendUserInfo({
+  userId: "cust_5678",
+  userHash: "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1v2w3x4y5z6a7b8c9d0e1f2",
   name: "Jane Smith",
   info: "Student account"               // Simple text string
 });
 
 window.chatbot.sendUserInfo({
+  userId: "emp_9012",
+  userHash: "f1e2d3c4b5a6978685746352413f2e1d0c9b8a7968574635241f3e2d1c0b9a87",
   email: "user@example.com",
   info: JSON.stringify({                // Stringified JSON for structured data
     plan: "premium",
@@ -222,7 +238,39 @@ window.chatbot.clearUserInfo()
 
 
 /* ===========================================
-   3. EVENT LISTENERS
+   3. WIDGET CONTROLS
+   =========================================== */
+
+// Opening the chatbot widget
+window.chatbot.openWidget()
+  .then(response => {
+    console.log("Widget opened:", response);
+  })
+  .catch(error => {
+    console.error("Error opening widget:", error);
+  });
+
+// Closing the chatbot widget
+window.chatbot.closeWidget()
+  .then(response => {
+    console.log("Widget closed:", response);
+  })
+  .catch(error => {
+    console.error("Error closing widget:", error);
+  });
+
+// Toggling the chatbot widget (open if closed, close if open)
+window.chatbot.toggleWidget()
+  .then(response => {
+    console.log("Widget toggled:", response);
+  })
+  .catch(error => {
+    console.error("Error toggling widget:", error);
+  });
+
+
+/* ===========================================
+   4. EVENT LISTENERS
    =========================================== */
 
 // 1. Chat messages
@@ -258,7 +306,7 @@ window.chatbot.removeEventListener("chat", chatHandler);
 
 
 /* ===========================================
-   4. CONFIGURATION
+   5. CONFIGURATION
    =========================================== */
 
 // Get current configuration
@@ -267,7 +315,7 @@ console.log("Current configuration:", config);
 
 
 /* ===========================================
-   5. ERROR HANDLING
+   6. ERROR HANDLING
    =========================================== */
 
 // Option 1: Using try-catch blocks
@@ -298,13 +346,15 @@ window.chatbot.sendUserInfo({
 
 
 /* ===========================================
-   6. COMMON USAGE PATTERNS
+   7. COMMON USAGE PATTERNS
    =========================================== */
 
 // Sending user data after login
 function onUserLogin(userData) {
   if (window.chatbot) {
     window.chatbot.sendUserInfo({
+      userId: userData.id || userData.userId,
+      userHash: userData.securityHash || userData.userHash,
       name: userData.displayName,
       email: userData.email,
       phone: userData.phoneNumber,
@@ -325,6 +375,54 @@ function setupChatbotEventListeners() {
       // Process event data as needed
     });
   });
+}
+
+// Widget control examples
+function openChatWidget() {
+  if (window.chatbot) {
+    window.chatbot.openWidget()
+      .then(() => {
+        console.log("Chat widget opened successfully");
+      })
+      .catch(error => {
+        console.error("Failed to open chat widget:", error);
+      });
+  }
+}
+
+function closeChatWidget() {
+  if (window.chatbot) {
+    window.chatbot.closeWidget()
+      .then(() => {
+        console.log("Chat widget closed successfully");
+      })
+      .catch(error => {
+        console.error("Failed to close chat widget:", error);
+      });
+  }
+}
+
+function toggleChatWidget() {
+  if (window.chatbot) {
+    window.chatbot.toggleWidget()
+      .then(() => {
+        console.log("Chat widget toggled successfully");
+      })
+      .catch(error => {
+        console.error("Failed to toggle chat widget:", error);
+      });
+  }
+}
+
+// Conditional widget control based on user behavior
+function handleUserAction(action) {
+  if (action === 'help-needed') {
+    // Open widget when user needs help
+    window.chatbot.openWidget();
+  } else if (action === 'completed-task') {
+    // Close widget when user completes their task
+    window.chatbot.closeWidget();
+  }
 }
   </pre>
 
@@ -427,6 +525,14 @@ function setupChatbotEventListeners() {
       logEvent('Minimize widget event received', 'success', data);
     }
 
+    function errorEventHandler(data) {
+      logEvent('Error event received', 'error', data);
+    }
+
+    function warningEventHandler(data) {
+      logEvent('Warning event received', 'info', data);
+    }
+
     // Send user info form submission
     document.getElementById('userInfoForm').addEventListener('submit', function(event) {
       event.preventDefault();
@@ -439,6 +545,8 @@ function setupChatbotEventListeners() {
       // Send user info using the SDK
       logEvent('Sending user info...', 'info');
       window.chatbot.sendUserInfo({
+        userId: 'user_12345',
+        userHash: '59b403cc509e4f27ed10a6cb440cb2fb74a9fd71b2564ab19cb06527f2a7aa7a',
         name,
         email,
         phone,
@@ -463,6 +571,54 @@ function setupChatbotEventListeners() {
           });
       } else {
         logEvent('SDK not initialized or clearUserInfo method not available', 'error');
+      }
+    });
+
+    // Open widget button handler
+    document.getElementById('openWidgetBtn').addEventListener('click', function() {
+      if (window.chatbot && window.chatbot.openWidget) {
+        logEvent('Opening widget...', 'info');
+        window.chatbot.openWidget()
+          .then(response => {
+            logEvent('Widget opened successfully', 'success', response);
+          })
+          .catch(error => {
+            logEvent('Error opening widget', 'error', error.message);
+          });
+      } else {
+        logEvent('SDK not initialized or openWidget method not available', 'error');
+      }
+    });
+
+    // Close widget button handler
+    document.getElementById('closeWidgetBtn').addEventListener('click', function() {
+      if (window.chatbot && window.chatbot.closeWidget) {
+        logEvent('Closing widget...', 'info');
+        window.chatbot.closeWidget()
+          .then(response => {
+            logEvent('Widget closed successfully', 'success', response);
+          })
+          .catch(error => {
+            logEvent('Error closing widget', 'error', error.message);
+          });
+      } else {
+        logEvent('SDK not initialized or closeWidget method not available', 'error');
+      }
+    });
+
+    // Toggle widget button handler
+    document.getElementById('toggleWidgetBtn').addEventListener('click', function() {
+      if (window.chatbot && window.chatbot.toggleWidget) {
+        logEvent('Toggling widget...', 'info');
+        window.chatbot.toggleWidget()
+          .then(response => {
+            logEvent('Widget toggled successfully', 'success', response);
+          })
+          .catch(error => {
+            logEvent('Error toggling widget', 'error', error.message);
+          });
+      } else {
+        logEvent('SDK not initialized or toggleWidget method not available', 'error');
       }
     });
 
@@ -510,6 +666,14 @@ function setupChatbotEventListeners() {
     document.addEventListener('DOMContentLoaded', function() {
       updateConfigDisplay();
       logEvent('Chat Data SDK demo page loaded');
+
+      // Add error and warning event listeners after SDK initialization
+      setTimeout(() => {
+        if (window.chatbot) {
+          window.chatbot.addEventListener('error', errorEventHandler);
+          window.chatbot.addEventListener('warning', warningEventHandler);
+        }
+      }, 500);
     });
   </script>
 </body>
