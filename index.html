@@ -136,11 +136,16 @@
 
   <div class="card">
     <h2>Widget Controls</h2>
-    <p>Programmatically control the chatbot widget's open/closed state.</p>
-    <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+    <p>Programmatically control the chatbot widget's open/closed state and theme.</p>
+    <div style="display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
       <button id="openWidgetBtn">Open Widget</button>
       <button id="closeWidgetBtn" class="danger">Close Widget</button>
       <button id="toggleWidgetBtn">Toggle Widget</button>
+    </div>
+    <div style="display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
+      <button id="setLightThemeBtn">Set Light Theme</button>
+      <button id="setDarkThemeBtn">Set Dark Theme</button>
+      <button id="toggleThemeBtn">Toggle Theme</button>
     </div>
   </div>
 
@@ -266,6 +271,33 @@ window.chatbot.toggleWidget()
   })
   .catch(error => {
     console.error("Error toggling widget:", error);
+  });
+
+// Setting the chatbot theme to light mode
+window.chatbot.setTheme('light')
+  .then(response => {
+    console.log("Theme set to light:", response);
+  })
+  .catch(error => {
+    console.error("Error setting theme:", error);
+  });
+
+// Setting the chatbot theme to dark mode
+window.chatbot.setTheme('dark')
+  .then(response => {
+    console.log("Theme set to dark:", response);
+  })
+  .catch(error => {
+    console.error("Error setting theme:", error);
+  });
+
+// Toggling the chatbot theme (light to dark or dark to light)
+window.chatbot.toggleTheme()
+  .then(response => {
+    console.log("Theme toggled:", response);
+  })
+  .catch(error => {
+    console.error("Error toggling theme:", error);
   });
 
 
@@ -414,6 +446,43 @@ function toggleChatWidget() {
   }
 }
 
+// Theme control examples
+function setLightTheme() {
+  if (window.chatbot) {
+    window.chatbot.setTheme('light')
+      .then(() => {
+        console.log("Theme set to light successfully");
+      })
+      .catch(error => {
+        console.error("Failed to set light theme:", error);
+      });
+  }
+}
+
+function setDarkTheme() {
+  if (window.chatbot) {
+    window.chatbot.setTheme('dark')
+      .then(() => {
+        console.log("Theme set to dark successfully");
+      })
+      .catch(error => {
+        console.error("Failed to set dark theme:", error);
+      });
+  }
+}
+
+function toggleChatTheme() {
+  if (window.chatbot) {
+    window.chatbot.toggleTheme()
+      .then(() => {
+        console.log("Chat theme toggled successfully");
+      })
+      .catch(error => {
+        console.error("Failed to toggle chat theme:", error);
+      });
+  }
+}
+
 // Conditional widget control based on user behavior
 function handleUserAction(action) {
   if (action === 'help-needed') {
@@ -423,6 +492,19 @@ function handleUserAction(action) {
     // Close widget when user completes their task
     window.chatbot.closeWidget();
   }
+}
+
+// Dynamic theme switching based on user preferences or time of day
+function setThemeBasedOnUserPreference(userPreference) {
+  const theme = userPreference === 'dark' ? 'dark' : 'light';
+  window.chatbot.setTheme(theme);
+}
+
+function setThemeBasedOnTimeOfDay() {
+  const currentHour = new Date().getHours();
+  const isDayTime = currentHour >= 6 && currentHour < 18;
+  const theme = isDayTime ? 'light' : 'dark';
+  window.chatbot.setTheme(theme);
 }
   </pre>
 
@@ -619,6 +701,54 @@ function handleUserAction(action) {
           });
       } else {
         logEvent('SDK not initialized or toggleWidget method not available', 'error');
+      }
+    });
+
+    // Set light theme button handler
+    document.getElementById('setLightThemeBtn').addEventListener('click', function() {
+      if (window.chatbot && window.chatbot.setTheme) {
+        logEvent('Setting light theme...', 'info');
+        window.chatbot.setTheme('light')
+          .then(response => {
+            logEvent('Light theme set successfully', 'success', response);
+          })
+          .catch(error => {
+            logEvent('Error setting light theme', 'error', error.message);
+          });
+      } else {
+        logEvent('SDK not initialized or setTheme method not available', 'error');
+      }
+    });
+
+    // Set dark theme button handler
+    document.getElementById('setDarkThemeBtn').addEventListener('click', function() {
+      if (window.chatbot && window.chatbot.setTheme) {
+        logEvent('Setting dark theme...', 'info');
+        window.chatbot.setTheme('dark')
+          .then(response => {
+            logEvent('Dark theme set successfully', 'success', response);
+          })
+          .catch(error => {
+            logEvent('Error setting dark theme', 'error', error.message);
+          });
+      } else {
+        logEvent('SDK not initialized or setTheme method not available', 'error');
+      }
+    });
+
+    // Toggle theme button handler
+    document.getElementById('toggleThemeBtn').addEventListener('click', function() {
+      if (window.chatbot && window.chatbot.toggleTheme) {
+        logEvent('Toggling theme...', 'info');
+        window.chatbot.toggleTheme()
+          .then(response => {
+            logEvent('Theme toggled successfully', 'success', response);
+          })
+          .catch(error => {
+            logEvent('Error toggling theme', 'error', error.message);
+          });
+      } else {
+        logEvent('SDK not initialized or toggleTheme method not available', 'error');
       }
     });
 
